@@ -19,16 +19,6 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
  *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *  for the specific language governing permissions and limitations under the License.
- */
-def version() {"ver 0.2.170515"}					//update as needed
-
-
-def currVersions(child) {						//Let's user know if running the child versions that corresponds to this parent version
-if(child=="fan")   {return "ver 0.2.170515"}	//manually enter the version of the FAN child that matches the parent version above
-if(child=="light") {return "ver 0.2.170515a"}	//manually enter the version of the LIGHT child that matches the parent version above
-}
-
-/*
 
  05/15 added GRN=OK RED=Update to version tile, changed parent tile version to fill empty space, shorten ver to increase font in tile
     a- fixed line 225 -Light
@@ -37,8 +27,8 @@ if(child=="light") {return "ver 0.2.170515a"}	//manually enter the version of th
     a- evaluating new Speed 1,2,3,4 for ease of voice and look, it matches the fan speed bar icons instead of Lo, Med, Hi
  05/04 Modified labels lowercase,Comfort Breeze™ , getFanName() to be longer names vs abbr
  05/03 renamed LAMP to LIGHT in all instances to conform to ST standards
- 05/01 fixed bug when recreated child names didn't use the new name but the original name; def createFanChild() 
-    c- added TurningBreezeOff attributeState to match the Breeze icon 
+ 05/01 fixed bug when recreated child names didn't use the new name but the original name; def createFanChild()
+    c- added TurningBreezeOff attributeState to match the Breeze icon
     b- added CeilingFanParent in version, added new grey OFF icons
     a- move Stephack latest changes;(one step child delete/create, etc) over in a copy/paste; change namespace
  04/30 Moved refresh()Configure() from child creation method to initialize, added individual icons for fan child
@@ -54,8 +44,28 @@ if(child=="light") {return "ver 0.2.170515a"}	//manually enter the version of th
  0.2.1b parent on-off states sync with any child state for ActionTiles
  04/19 added version tile to help in troubleshooting with users
 */
+
+static String getVersionParent() { //update as needed
+	return "ver 0.2.170515"
+}
+
+static String getVersionLight() {
+	return "ver 0.2.170515"
+}
+
+static String getVersionFan() {
+	return "ver 0.2.170515a"
+}
+
+static String getIconURL() {
+	return "https://cdn.rawgit.com/dcoffing/KOF-CeilingFan/master/resources/images/"
+}
+
 metadata {
-	definition (name: "KOF Zigbee Fan Controller", namespace: "dcoffing", author: "Stephan Hackett, Ranga Pedamallu, Dale Coffing") {
+	definition (
+			name: "KOF Zigbee Fan Controller",
+			namespace: "dcoffing",
+			author: "Stephan Hackett, Ranga Pedamallu, Dale Coffing") {
 		capability "Actuator"
         capability "Configuration"
         capability "Refresh"
@@ -84,24 +94,29 @@ metadata {
     preferences {
     	page(name: "childToRebuild", title: "This does not display on DTH preference page")
             section("section") {              
-            	input(name: "refreshChildren", type: "bool", title: "Delete & Recreate all child devices?\n\nTypically used after modifying the parent device name " +
-                "above to give all child devices the new name.\n\nPLEASE NOTE: Child Devices must be removed from any smartApps BEFORE attempting this " +
-                "process or 'An unexpected error' occurs attempting to delete the child's.")                      
+            	input(
+						name: "refreshChildren",
+						type: "bool",
+						title: "Delete & Recreate all child devices?\n\n" +
+								"Typically used after modifying the parent device name above to give all child devices " +
+								"the new name.\n\nPLEASE NOTE: Child Devices must be removed from any smartApps BEFORE " +
+								"attempting this process or 'An unexpected error' occurs attempting to delete the child's."
+				)
        }
     }
     
     tiles(scale: 2) {    	
 	multiAttributeTile(name: "switch", type: "lighting", width: 6, height: 4) {        	
 		tileAttribute ("fanMode", key: "PRIMARY_CONTROL") {			
-			attributeState "04", label:"HIGH", action:"off", icon:getIcon()+"fan4h.png", backgroundColor:"#79b821", nextState: "turningOff"
-			attributeState "03", label:"MED-HI", action:"off", icon:getIcon()+"fan3h.png", backgroundColor:"#79b821", nextState: "turningOff"
-			attributeState "02", label:"MED", action:"off", icon:getIcon()+"fan2h.png", backgroundColor:"#79b821", nextState: "turningOff"
-			attributeState "01", label:"LOW", action:"off", icon:getIcon()+"fan1h.png", backgroundColor:"#79b821", nextState: "turningOff"
-			attributeState "06", label:"BREEZE", action:"off", icon:getIcon()+"breeze4h_blk.png", backgroundColor:"#008B64", nextState: "turningBreezeOff"
-        	attributeState "00", label:"FAN OFF", action:"on", icon:getIcon()+"fan00h_grey.png", backgroundColor:"#ffffff", nextState: "turningOn"
-			attributeState "turningOn", action:"on", label:"TURNING ON", icon:getIcon()+"fan0h.png", backgroundColor:"#2179b8", nextState: "turningOn"
-			attributeState "turningOff", action:"off", label:"TURNING OFF", icon:getIcon()+"fan0h_grey.png", backgroundColor:"#2179b8", nextState: "turningOff"
-            attributeState "turningBreezeOff", action:"off", label:"TURNING OFF", icon:getIcon()+"breeze4h_teal.png", backgroundColor:"#2179b8", nextState: "turningOff"
+			attributeState "04", label:"HIGH", action:"off", icon:iconURL+"fan4h.png", backgroundColor:"#79b821", nextState: "turningOff"
+			attributeState "03", label:"MED-HI", action:"off", icon:iconURL+"fan3h.png", backgroundColor:"#79b821", nextState: "turningOff"
+			attributeState "02", label:"MED", action:"off", icon:iconURL+"fan2h.png", backgroundColor:"#79b821", nextState: "turningOff"
+			attributeState "01", label:"LOW", action:"off", icon:iconURL+"fan1h.png", backgroundColor:"#79b821", nextState: "turningOff"
+			attributeState "06", label:"BREEZE", action:"off", icon:iconURL+"breeze4h_blk.png", backgroundColor:"#008B64", nextState: "turningBreezeOff"
+        	attributeState "00", label:"FAN OFF", action:"on", icon:iconURL+"fan00h_grey.png", backgroundColor:"#ffffff", nextState: "turningOn"
+			attributeState "turningOn", action:"on", label:"TURNING ON", icon:iconURL+"fan0h.png", backgroundColor:"#2179b8", nextState: "turningOn"
+			attributeState "turningOff", action:"off", label:"TURNING OFF", icon:iconURL+"fan0h_grey.png", backgroundColor:"#2179b8", nextState: "turningOff"
+            attributeState "turningBreezeOff", action:"off", label:"TURNING OFF", icon:iconURL+"breeze4h_teal.png", backgroundColor:"#2179b8", nextState: "turningOff"
         }  
         tileAttribute ("lightBrightness", key: "SLIDER_CONTROL") {
 			attributeState "lightBrightness", action:"lightLevel"
@@ -111,7 +126,7 @@ metadata {
 		state "default", label:"", action:"refresh.refresh", icon:"st.secondary.refresh"
 	}  
     valueTile("version", "version", width:4, height:1) {
-    	state "version", label:"Ceiling Fan Parent\n"+ version()
+    	state "version", label:"Ceiling Fan Parent\n" + versionParent
     }
     valueTile("FchildVer", "FchildVer", width:3, height:1) {
     	state "FchildVer", label: "Fan Child "+'${currentValue}'+"\nGRN=OK RED=Update"
@@ -141,7 +156,20 @@ metadata {
     childDeviceTile("fanLight", "fanLight", height: 2, width: 2)
     
 	main(["switch"])        
-	details(["switch", "fanLight", "fanMode1", "fanMode2", "fanMode6", "fanMode3", "fanMode4", "refresh", "FchildVer", "FchildCurr", "LchildVer", "LchildCurr", "version"])
+	details([
+			"switch",
+			"fanLight",
+			"fanMode1",
+			"fanMode2",
+			"fanMode6",
+			"fanMode3",
+			"fanMode4",
+			"refresh",
+			"FchildVer",
+			"FchildCurr",
+			"LchildVer",
+			"LchildCurr",
+			"version"])
 	}
 }
 
@@ -176,11 +204,7 @@ def parse(String description) {
    	}                
 }
 
-def getIcon() {
-	return "https://cdn.rawgit.com/dcoffing/KOF-CeilingFan/master/resources/images/"
-}
-
-def getFanName() { 
+static def getFanName() {
 	[  
     "00":"Off",
     "01":"Low",
@@ -193,8 +217,8 @@ def getFanName() {
 	]
 }
 
-def getFanNameAbbr() { 
-	[  
+static def getFanNameAbbr() {
+	[
     "00":"Off",
     "01":"Low",
     "02":"Med",
@@ -233,25 +257,42 @@ def updateChildLabel() {
 	for(i in 1..6) {   		
     	def childDevice = getChildDevices()?.find {
         	it.device.deviceNetworkId == "${device.deviceNetworkId}-0${i}"
-    	}                 
-        if (childDevice && i != 5) {childDevice.label = "${device.displayName} ${getFanName()["0${i}"]}"} // rename with new label
+    	}
+		// rename with new label
+        if (childDevice && i != 5) {childDevice.label = "${device.displayName} ${getFanName()["0"+i]}"}
     }
     
     def childDeviceL = getChildDevices()?.find {
         	it.device.deviceNetworkId == "${device.deviceNetworkId}-Light"
     }
-    if (childDeviceL) {childDeviceL.label = "${device.displayName}-Light"}    // rename with new label
+	// rename with new label
+    if (childDeviceL) {childDeviceL.label = "${device.displayName}-Light"}
 }
 def createFanChild() {
-	state.oldLabel = device.label    //save the label for reference if it ever changes
+
+	//save the label for reference if it ever changes
+	state.oldLabel = device.label
+
 	for(i in 1..6) {   		
     	def childDevice = getChildDevices()?.find {
         	it.device.deviceNetworkId == "${device.deviceNetworkId}-0${i}"
     	}                 
         if (!childDevice && i != 5) {        
-        	childDevice = addChildDevice("KOF Zigbee Fan Controller - Fan Speed Child Device", "${device.deviceNetworkId}-0${i}", null,[completedSetup: true,
-            label: "${device.displayName} ${getFanName()["0${i}"]}", isComponent: true, componentName: "fanMode${i}",
-            componentLabel: "${getFanName()["0${i}"]}", "data":["speedVal":"0${i}","parent version":version()]])        	
+        	childDevice = addChildDevice("KOF Zigbee Fan Controller - Fan Speed Child Device",
+					"${device.deviceNetworkId}-0${i}",
+					null,
+					[
+							completedSetup: true,
+							label: "${device.displayName} ${getFanName()["0"+i]}",
+							isComponent: true,
+							componentName: "fanMode${i}",
+							componentLabel: "${getFanName()["0"+i]}",
+							"data":[
+									"speedVal":"0${i}",
+									"parent version":versionParent
+							]
+					]
+			)
            	log.info "Creating child fan mode ${childDevice}"  
 		}
        	else {
@@ -268,9 +309,19 @@ def createLightChild() {
         	it.device.deviceNetworkId == "${device.deviceNetworkId}-Light"
     }
     if (!childDevice) {  
-		childDevice = addChildDevice("KOF Zigbee Fan Controller - Light Child Device", "${device.deviceNetworkId}-Light", null,[completedSetup: true,
-        label: "${device.displayName} Light", isComponent: false, componentName: "fanLight",
-        componentLabel: "Light", "data":["parent version":version()]])       
+		childDevice = addChildDevice(
+				"KOF Zigbee Fan Controller - Light Child Device",
+				"${device.deviceNetworkId}-Light",
+				null,
+				[
+						completedSetup: true,
+        				label: "${device.displayName} Light",
+						isComponent: false,
+						componentName: "fanLight",
+        				componentLabel: "Light",
+						"data":["parent version":versionParent]
+				]
+		)
         log.info "Creating child light ${childDevice}" 
     }
 	else {
@@ -293,10 +344,12 @@ def configure() {
 	  //Set long poll interval
 	  "raw 0x0020 {11 00 02 02 00 00 00}", "delay 100",
 	  "send 0x${device.deviceNetworkId} 1 1", "delay 100",
+
 	  //Bindings for Fan Control
       "zdo bind 0x${device.deviceNetworkId} 1 1 0x006 {${device.zigbeeId}} {}", "delay 100",
       "zdo bind 0x${device.deviceNetworkId} 1 1 0x008 {${device.zigbeeId}} {}", "delay 100",
 	  "zdo bind 0x${device.deviceNetworkId} 1 1 0x202 {${device.zigbeeId}} {}", "delay 100",
+
 	  //Fan Control - Configure Report
       "zcl global send-me-a-report 0x006 0 0x10 1 300 {}", "delay 100",
        "send 0x${device.deviceNetworkId} 1 1", "delay 100",
@@ -304,10 +357,12 @@ def configure() {
        "send 0x${device.deviceNetworkId} 1 1", "delay 100",
 	  "zcl global send-me-a-report 0x202 0 0x30 1 300 {}", "delay 100",
 	  "send 0x${device.deviceNetworkId} 1 1", "delay 100",
+
 	  //Update values
       "st rattr 0x${device.deviceNetworkId} 1 0x006 0", "delay 100",
       "st rattr 0x${device.deviceNetworkId} 1 0x008 0", "delay 100",
 	  "st rattr 0x${device.deviceNetworkId} 1 0x202 0", "delay 100",
+
 	 //Set long poll interval
 	  "raw 0x0020 {11 00 02 1C 00 00 00}", "delay 100",
 	  "send 0x${device.deviceNetworkId} 1 1", "delay 100"
@@ -387,19 +442,28 @@ def refresh() {
 
 
 def getChildVer() {
+	/**
+	 * 	Find a device,
+	 * 	1. get version info and store in FchildVer,
+	 * 	2. check child version is current and set color accordingly
+	 */
+
 	def FchildDevice = getChildDevices()?.find {
         	it.device.deviceNetworkId == "${device.deviceNetworkId}-01"
-    	}                 
-	if(FchildDevice){	//find a fan device, 1. get version info and store in FchildVer, 2. check child version is current and set color accordingly
+    	}
+
+	def LchildDevice = getChildDevices()?.find {
+		it.device.deviceNetworkId == "${device.deviceNetworkId}-Light"
+	}
+
+	if(FchildDevice){
     	sendEvent(name:"FchildVer", value: FchildDevice.version())	
-    	FchildDevice.version() != currVersions("fan")?sendEvent(name:"FchildCurr", value: 1):sendEvent(name:"FchildCurr", value: 2)
+    	FchildDevice.version() != versionFan?sendEvent(name:"FchildCurr", value: 1):sendEvent(name:"FchildCurr", value: 2)
     }
     
-    def LchildDevice = getChildDevices()?.find {
-        	it.device.deviceNetworkId == "${device.deviceNetworkId}-Light"
-    	}                 
+
 	if(LchildDevice) {	    //find the light device, get version info and store in LchildVer    
     	sendEvent(name:"LchildVer", value: LchildDevice.version())
-    	LchildDevice.version() != currVersions("light")?sendEvent(name:"LchildCurr", value: 1):sendEvent(name:"LchildCurr", value: 2)
+    	LchildDevice.version() != versionLight?sendEvent(name:"LchildCurr", value: 1):sendEvent(name:"LchildCurr", value: 2)
 	}
 }
